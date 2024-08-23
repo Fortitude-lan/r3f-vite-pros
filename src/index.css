@@ -6,3 +6,117 @@
 body {
   margin: 0;
 }
+.leva-c-hBtFDW{
+  /* height: auto !important; */
+}
+/* **************进度条样式 start******************* */
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 4rem;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  background-color: #b8c6db;
+  background-image: linear-gradient(0deg, #d9dbb8 0%, #faf6f5 74%);
+}
+
+.loading-screen__title {
+  font-size: 4rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: #ffd000;
+  margin: 0;
+}
+
+.progress__container {
+  width: 100%;
+  height: 1rem;
+  background-color: rgba(174, 185, 204, 0.42);
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+}
+.loading-screen__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.progress__bar {
+  width: 0;
+  height: 100%;
+  background: linear-gradient(45deg, #ff0800 60%, #ffae00 0%);
+  transition: width 0.5s ease-in-out;
+}
+.loading-screen {
+  /* ... */
+  opacity: 1;
+}
+
+.loading-screen--hidden {
+  animation: fade-out 0.5s ease-in-out forwards 1s;
+}
+
+@keyframes fade-out {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* HTML: <div class="jlq"></div> */
+.jlq {
+  width: 60px;
+  height: 60px;
+  aspect-ratio: 1;
+  position: relative;
+}
+
+.jlq::before,
+.jlq::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  transform-origin: bottom;
+}
+
+.jlq::after {
+  background: radial-gradient(at 75% 15%, #fffb, #0000 35%),
+    radial-gradient(at 80% 40%, #0000, #0008),
+    radial-gradient(circle 5px, #fff 94%, #0000),
+    radial-gradient(circle 10px, #000 94%, #0000),
+    linear-gradient(#f93318 0 0) top / 100% calc(50% - 5px),
+    linear-gradient(#fff 0 0) bottom/100% calc(50% - 5px) #000;
+  background-repeat: no-repeat;
+  animation: l20 1s infinite cubic-bezier(0.5, 120, 0.5, -120);
+}
+
+.jlq::before {
+  background: #ddd;
+  filter: blur(8px);
+  transform: scaleY(0.4) translate(-13px, 0px);
+}
+
+@keyframes l20 {
+  30%,
+  70% {
+    transform: rotate(0deg);
+  }
+
+  49.99% {
+    transform: rotate(0.2deg);
+  }
+
+  50% {
+    transform: rotate(-0.2deg);
+  }
+}
+/* **************进度条样式 end******************* */
