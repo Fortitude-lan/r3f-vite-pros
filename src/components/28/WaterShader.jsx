@@ -1,3 +1,11 @@
+/*
+ * @Descripttion: 
+ * @version: 1.0
+ * @Author: Hesin
+ * @Date: 2024-07-04 10:14:15
+ * @LastEditors: Hesin
+ * @LastEditTime: 2024-09-27 11:26:44
+ */
 import React, { useRef } from "react";
 import { useControls } from "leva";
 import { extend, useFrame } from "@react-three/fiber";
@@ -28,7 +36,7 @@ export default function WaterShader() {
     foamTop,
     repeat,
     maxDepth,
-  } = useControls("waterComp",{
+  } = useControls("waterComp", {
     waterOpacity: { value: 0.8, min: 0, max: 1 },
     waterColor: "#00c3ff",
     speed: { value: 0.5, min: 0, max: 5 },
@@ -92,8 +100,8 @@ export default function WaterShader() {
   return (
     <>
       <mesh ref={waterRef} rotation={[-Math.PI / 2, 0, 0]} position-y={-0.1}>
-        {/* <planeGeometry args={[1, 3, 2, 2]} /> */}
-        <sphereGeometry args={[3,32,16]}/>
+        <planeGeometry args={[1, 3, 2, 2]} />
+        {/* <sphereGeometry args={[3, 32, 16]} /> */}
         <waterMaterial
           ref={waterMaterialRef}
           uColor={new Color(waterColor)}
@@ -205,6 +213,6 @@ export const WaterMaterial = shaderMaterial(
       #include <tonemapping_fragment>
       #include <encodings_fragment>
     }`)
-);  
+);
 
 extend({ WaterMaterial });

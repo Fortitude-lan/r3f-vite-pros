@@ -103,7 +103,7 @@ function Terrain({ tRef, name, compute }) {
     }, [tRef, compute, state])
 
     //草地数量
-    const count = 100;
+    const count = 500;
 
     useEffect(() => {
         if (grassNode) {
@@ -114,7 +114,7 @@ function Terrain({ tRef, name, compute }) {
         }
     }, [gNodes, state])
     return <>
-        <group dispose={null}>
+        <group dispose={null} >
             {/* 山 */}
             {/* <mesh geometry={mNodes.Landscape.geometry} ref={tRef}> */}
             {/* 地 */}

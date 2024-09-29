@@ -4,10 +4,10 @@
  * @Author: 
  * @Date: 2024-07-04 09:55:23
  * @LastEditors: Hesin
- * @LastEditTime: 2024-08-23 11:09:25
+ * @LastEditTime: 2024-09-29 10:51:42
  */
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Stage } from "@react-three/drei";
+import { OrbitControls, ScrollControls, Stage } from "@react-three/drei";
 import { Leva, useControls } from "leva";
 import { Suspense } from "react";
 import LoadingScreen from "./LoadingScreen";
@@ -20,6 +20,12 @@ import Holo from "./components/Hologram";
 import Dissolve from "./components/Dissolve";
 import Grass from "./components/Grass/Grass";
 import Grass2 from "./components/Grass2";
+import Explosion from "./components/Explosion";
+import WaterFall from "./components/28/WaterFall";
+import Wind from "./components/Wind/Wind";
+import Fire from "./components/Fire/Fire";
+import ExplodingBall from "./components/ExplodeBall";
+import Plant from "./components/Plant";
 function App() {
   const statueBtns = useControls('Basic', {
     waterComp: false,
@@ -36,7 +42,12 @@ function App() {
       {/* 2.控制板 */}
       <Leva collapsed />
       {/* 3.Canvas */}
-      <Canvas shadows camera={{ position: [15, 15, 15], fov: 75, near: 0.1, far: 1000 }} >
+      <Canvas
+        shadows
+        camera={{ position: [0, 0, 5], fov: 75, near: 0.1, far: 1000 }}
+        gl={{ antialias: true }}
+        dpr={[1, 1.5]}
+      >
         <OrbitControls enableDamping />
         <color attach="background" args={[statueBtns.bgColor]} />
         <Suspense fallback={null}>
@@ -61,10 +72,26 @@ function App() {
           {/* <Dissolve /> */}
 
           {/* 草地shader */}
-          <Grass />
+          {/* <Grass /> */}
           {/* <Grass2 /> */}
+          {/* 爆炸碎片 */}
+          {/* <ScrollControls damping={0.5} pages={3}>
+            <Explosion />
+          </ScrollControls> */}
+
+          {/* 瀑布 */}
+          {/* <WaterFall /> */}
+
+          {/* 风 */}
+          {/* <Wind/> */}
+
+          {/* 火 */}
+          {/* <Fire/> */}
+          <ExplodingBall />
+
+          {/* <Plant/> */}
         </Suspense>
-      </Canvas>
+      </Canvas >
     </>
   );
 }

@@ -1,3 +1,11 @@
+/*
+ * @Descripttion: 
+ * @version: 1.0
+ * @Author: Hesin
+ * @Date: 2024-08-17 12:07:09
+ * @LastEditors: Hesin
+ * @LastEditTime: 2024-09-24 15:17:09
+ */
 /**
  * Holographic material component by Anderson Mancini - Dec 2023.
  * Dec 7th - Added useMemo for better performance
