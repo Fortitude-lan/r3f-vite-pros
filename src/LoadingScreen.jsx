@@ -3,14 +3,14 @@
  * @version: Antares
  * @Author: 
  * @Date: 2024-07-04 13:45:44
- * @LastEditors: Chevalier
- * @LastEditTime: 2024-08-15 08:06:49
+ * @LastEditors: Hesin
+ * @LastEditTime: 2024-12-02 23:59:52
  */
 import { useProgress } from "@react-three/drei";
 
 export default function LoadingScreen() {
   const { progress, active } = useProgress();
-
+  console.log(progress)
   return (
     <div className={`loading-screen ${active ? "" : "loading-screen--hidden"}`}>
       <div className="loading-screen__container">

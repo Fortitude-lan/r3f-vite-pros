@@ -4,10 +4,10 @@
  * @Author: 
  * @Date: 2024-07-04 09:55:23
  * @LastEditors: Hesin
- * @LastEditTime: 2024-09-29 10:51:42
+ * @LastEditTime: 2025-01-12 13:53:10
  */
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, ScrollControls, Stage } from "@react-three/drei";
+import { OrbitControls, ScrollControls, Stage, useTexture } from "@react-three/drei";
 import { Leva, useControls } from "leva";
 import { Suspense } from "react";
 import LoadingScreen from "./LoadingScreen";
@@ -20,20 +20,26 @@ import Holo from "./components/Hologram";
 import Dissolve from "./components/Dissolve";
 import Grass from "./components/Grass/Grass";
 import Grass2 from "./components/Grass2";
+import Bush from "./components/Bush";
 import Explosion from "./components/Explosion";
 import WaterFall from "./components/28/WaterFall";
 import Wind from "./components/Wind/Wind";
 import Fire from "./components/Fire/Fire";
 import ExplodingBall from "./components/ExplodeBall";
 import Plant from "./components/Plant";
+import { Flame } from "./components/Flame";
+
 function App() {
   const statueBtns = useControls('Basic', {
     waterComp: false,
+    grass: false,
     ballScene: false,
     hologram: false,
     shaderDemo: false,
+    wind: false,
     bgColor: "#292929"
   })
+
 
   return (
     <>
@@ -51,6 +57,7 @@ function App() {
         <OrbitControls enableDamping />
         <color attach="background" args={[statueBtns.bgColor]} />
         <Suspense fallback={null}>
+
           {/* Stage 聚光阴影 调用墙外hrd文件 */}
           {/* <Stage> */}
           {/* 随机球场景 */}
@@ -74,6 +81,7 @@ function App() {
           {/* 草地shader */}
           {/* <Grass /> */}
           {/* <Grass2 /> */}
+          <Bush />
           {/* 爆炸碎片 */}
           {/* <ScrollControls damping={0.5} pages={3}>
             <Explosion />
@@ -83,17 +91,19 @@ function App() {
           {/* <WaterFall /> */}
 
           {/* 风 */}
-          {/* <Wind/> */}
+
+          {statueBtns.wind && <Wind />}
 
           {/* 火 */}
           {/* <Fire/> */}
-          <ExplodingBall />
-
+          {/* <ExplodingBall /> */}
+          {/* 火焰 */}
+          {/* <Flame /> */}
+          {/* 平面测试 */}
           {/* <Plant/> */}
         </Suspense>
       </Canvas >
     </>
   );
 }
-
 export default App;

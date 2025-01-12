@@ -9,9 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@react-three/drei": "9.75.0",
-    "@react-three/fiber": "8.13.3",
-    "@react-three/postprocessing": "^2.16.2",
+    "@react-three/drei": "^9.119.0",
+    "@react-three/fiber": "^8.17.10",
+    "@react-three/postprocessing": "^2.16.6",
     "@types/three": "0.152.1",
     "framer-motion": "^11.3.29",
     "gsap": "^3.12.5",
@@ -19,7 +19,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "resolve-lygia": "^1.0.4",
-    "three": "^0.159.0"
+    "three": "^0.171.0",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@types/react": "^18.0.27",
