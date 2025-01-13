@@ -4,7 +4,7 @@
  * @Author: 
  * @Date: 2024-07-04 09:55:23
  * @LastEditors: Hesin
- * @LastEditTime: 2025-01-12 13:53:10
+ * @LastEditTime: 2025-01-12 19:48:48
  */
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, ScrollControls, Stage, useTexture } from "@react-three/drei";
@@ -28,6 +28,7 @@ import Fire from "./components/Fire/Fire";
 import ExplodingBall from "./components/ExplodeBall";
 import Plant from "./components/Plant";
 import { Flame } from "./components/Flame";
+import { WebGPURenderer } from "three/webgpu";
 
 function App() {
   const statueBtns = useControls('Basic', {
@@ -51,7 +52,13 @@ function App() {
       <Canvas
         shadows
         camera={{ position: [0, 0, 5], fov: 75, near: 0.1, far: 1000 }}
-        gl={{ antialias: true }}
+        gl={(canvas) => {
+          const renderer = new WebGPURenderer({ canvas: canvas })
+          renderer.init().then(() => {
+            // setInitialising(false)
+          })
+          return renderer
+        }}
         dpr={[1, 1.5]}
       >
         <OrbitControls enableDamping />

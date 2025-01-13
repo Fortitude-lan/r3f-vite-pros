@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef } from 'react'
 // import * as THREE from 'three'
 import * as THREE from 'three/webgpu'
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
-import { positionLocal, positionWorld, PI2, oneMinus, spherizeUV, sin, step, texture, time, Fn, uv, vec2, vec3, vec4, mix, billboarding } from 'three/tsl'
+import { positionLocal, positionWorld, texture, mix, sin, time, mul, vec3 } from 'three/tsl'
 const PLANE_COUNT = 500
 const BRUSH_COUNT = 50
 const Bush = () => {
@@ -28,7 +28,7 @@ const Bush = () => {
       plane.rotateX(Math.random() * 9999)
       plane.rotateY(Math.random() * 9999)
       plane.rotateZ(Math.random() * 9999)
-      plane.translate(position.x, position.y - Math.PI / 2 + 0.0001, position.z)
+      plane.translate(position.x, position.y, position.z)
 
       // Normal
       const normal = position.clone().normalize()
@@ -73,80 +73,95 @@ const Bush = () => {
 
   useEffect(() => {
     if (instanceMeshRef.current) {
-      instanceMeshRef.current.material.onBeforeCompile = (shader) => {
-        shader.vertexShader = shader.vertexShader.replace(
-          '#include <common>',
-          `
-          uniform sampler2D uNoise;
-          uniform float uTime;
-          varying vec3 vPositionWorld; 
-          varying vec3 vPositionLocal; 
-          #include <common>
-          `,
-        )
-        shader.vertexShader = shader.vertexShader.replace(
-          '#include <begin_vertex>',
-          `
-          #include <begin_vertex>
-          // Compute world position
-          vec4 worldPosition = modelMatrix * vec4(position, 1.0);
-          vPositionWorld = worldPosition.xyz;
-          vPositionLocal = position;
+      // const perlinUv = positionWorld.xz.mul(0.2).add(time.mul(0.5))
+      // const perlinColor = texture(perlinTexture, perlinUv).sub(0.5).mul(positionWorld.y)
+      // console.log(instanceMeshRef.current.material)
+      // instanceMeshRef.current.material.positionNode = positionLocal.add(vec3(perlinColor.r, 0, perlinColor.r))
 
-          // Compute Perlin noise-based wind effect
-          float interpolatedTime = sin(uTime) * 0.6;
-          vec2 perlinUv = vPositionWorld.xz * 0.2 + interpolatedTime;
-          vec3 perlinColor = texture2D(uNoise, perlinUv).rgb - vec3(0.5);
+      // instanceMeshRef.current.material.onBeforeCompile = (shader) => {
+      //   shader.vertexShader = shader.vertexShader.replace(
+      //     '#include <common>',
+      //     `
+      //     uniform sampler2D uNoise;
+      //     uniform float uTime;
+      //     varying vec3 vPositionWorld; 
+      //     varying vec3 vPositionLocal; 
+      //     #include <common>
+      //     `,
+      //   )
+      //   shader.vertexShader = shader.vertexShader.replace(
+      //     '#include <begin_vertex>',
+      //     `
+      //     #include <begin_vertex>
+      //     // Compute world position
+      //     vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+      //     vPositionWorld = worldPosition.xyz;
+      //     vPositionLocal = position;
 
-          float windEffect = 0.0;
-          if (vPositionWorld.y >= -0.5) {
-              windEffect = perlinColor.r * vPositionWorld.y;
-          }
+      //     // Compute Perlin noise-based wind effect
+      //     float interpolatedTime = sin(uTime) * 0.6;
+      //     vec2 perlinUv = vPositionWorld.xz * 0.2 + interpolatedTime;
+      //     vec3 perlinColor = texture2D(uNoise, perlinUv).rgb - vec3(0.5);
 
-          // Final position
-          transformed.xz += vec2(windEffect);
-        `,
-        )
-        shader.uniforms.uNoise = uniforms.uNoise
-        shader.uniforms.uTime = uniforms.uTime
-      }
+      //     float windEffect = 0.0;
+      //     if (vPositionWorld.y >= -0.5) {
+      //         windEffect = perlinColor.r * vPositionWorld.y;
+      //     }
+
+      //     // Final position
+      //     transformed.xz += vec2(windEffect);
+      //   `,
+      //   )
+      //   shader.uniforms.uNoise = uniforms.uNoise
+      //   shader.uniforms.uTime = uniforms.uTime
+      // }
 
       // TSL 暂时不行
       // if (instanceMeshRef) {
-      //   console.log(instanceMeshRef.current.material)
-      //   const perlinUv = positionWorld.xz.mul(0.2).add(time.mul(0.1))
-      //   const perlinColor = texture(perlinTexture, perlinUv).sub(0.5).mul(positionWorld.y)
-      //   instanceMeshRef.current.material.positionNode = positionLocal.add(vec3(perlinColor.r, 0, perlinColor.r))
       // }
+    }
+    if (instanceMeshRef.current) {
+      const currentTime = time.mul(0.5)
+      const perlinUv = positionWorld.xz.mul(0.2).add(sin(currentTime).mul(0.5))
+      const perlinColor = texture(perlinTexture, perlinUv).sub(0.5).mul(positionWorld.y)
+      instanceMeshRef.current.material.positionNode = positionLocal.add(vec3(perlinColor.r, 0, perlinColor.r))
     }
   }, [instanceMeshRef])
 
-  useFrame(({ _, clock }) => {
-    const eslapedTime = clock.getElapsedTime()
-    uniforms.uTime.value = eslapedTime
-
-  })
-
+  const material = new THREE.MeshBasicNodeMaterial()
+  useEffect(() => {
+    const red = vec3(1, 0, 0)
+    const blue = vec3(0, 0, 1)
+    const currentTime = time.mul(0.5)
+    material.colorNode = mix(red, blue, sin(currentTime))
+    material.positionNode = positionLocal.add(vec3(0, sin(currentTime).mul(0.2), 0))
+  }, [material])
   return (
-    <Instances
-      material={
-        new THREE.MeshMatcapMaterial({
-          matcap,
-          alphaMap,
-          transparent: true,
-          depthWrite: true,
-          blending: THREE.NormalBlending,
-          alphaTest: 0.5,
-          color: new THREE.Color().setHex(0xffffff),
-        })
-      }
-      geometry={geometries}
-      ref={instanceMeshRef}
-    >
-      {Array.from(Array(BRUSH_COUNT)).map((i, index) => (
-        <Instance key={index} position={[(Math.random() * 2 - 1) * 10 - 1, 2, (Math.random() * 2 - 1) * 10]} />
-      ))}
-    </Instances>
+    <>
+      <mesh>
+        <boxGeometry />
+        <primitive attach="material" object={material} />
+      </mesh>
+      <Instances
+        material={
+          new THREE.MeshMatcapNodeMaterial({
+            matcap,
+            alphaMap,
+            transparent: true,
+            depthWrite: true,
+            blending: THREE.NormalBlending,
+            alphaTest: 0.5,
+            color: new THREE.Color().setHex(0xffffff),
+          })
+        }
+        geometry={geometries}
+        ref={instanceMeshRef}
+      >
+        {Array.from(Array(BRUSH_COUNT)).map((i, index) => (
+          <Instance key={index} position={[(Math.random() * 2 - 1) * 10 - 1, 2, (Math.random() * 2 - 1) * 10]} />
+        ))}
+      </Instances>
+    </>
   )
 }
 
